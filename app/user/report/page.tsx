@@ -8,6 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+
+
+
 
 
 
@@ -27,6 +33,11 @@ const formSchema = z.object({
 });
 
 export default function ReportForm(){
+
+
+    
+
+    const router = useRouter();
 
     
 
@@ -61,15 +72,60 @@ export default function ReportForm(){
         );
     }
 
-    async function onSubmit<T>(data: T){
-        console.log(data);
+    async function onSubmit(data: any) {
+        try {
+            // Convert targetId to a string to avoid serialization issues with BigInt
+            const payload = {
+                ...data,
+                targetId: data.targetId.toString(),
+            };
+    
+            const response = await fetch('/api/reports', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+    
+            const result = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to submit report.");
+            }
+    
+            alert("Report submitted successfully!");
 
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
+            toast.success("Report submitted");
+    
+            // Optionally reset the form after submission
+            form.reset();
+        } catch (error: unknown) {
+            console.error("Submission error:", error);
+    
+            // Ensure `error` is an instance of `Error` before accessing `.message`
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                alert("An unexpected error occurred.");
+            }
+        }
     }
 
+    
     return (
-        <div className="flex justify-center p-5">
-            <Card className="w-full max-w-md">
+
+        
+
+        <div className="flex justify-center p-5 pt-20">
+            <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
+                <div className="font-bold text-lg">ServiHub</div>
+                <div className="flex gap-4">
+               
+                    <Button variant="outline" onClick={() => router.push("/")}>Home Page</Button>
+                    <Button variant="destructive" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</Button>
+                </div>
+            </nav>
+
+            <Card className="w-full max-w-md mt-20">
                 <CardHeader>
                     <CardTitle className="text-2xl">Submit a Report</CardTitle>
                 </CardHeader>

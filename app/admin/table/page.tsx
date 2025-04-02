@@ -1,39 +1,65 @@
 "use client";
-import { Report } from "@/types/report";
+import { Report, ApiReport } from "@/types/report";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { BiUndo } from "react-icons/bi";
 
-const mockReports: Report[] = [
-    {
-      id: 1,
-      type: "user",
-      targetId: 324,
-      reason: "spam",
-      status: "pending",
-      submittedBy: "user_456",
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      type: "review",
-      targetId: 789,
-      reason: "harassment",
-      status: "resolved",
-      submittedBy: "user_456",
-      resolvedBy: "admin_1",
-      createdAt: new Date(),
-    },
-  ];
+
 
   export default function AdminPage() {
-    const [reports, setReports] = useState<Report[]>(mockReports);
+
+    const router = useRouter();
+    
+    const [reports, setReports] = useState<Report[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string | "">( "");
     const [selectedType, setSelectedType] = useState<string| "">( "");
     const [showPopup, setShowPopup] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    async function fetchReports() {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/reports');
+            const apiReports: ApiReport[] = await response.json();
+
+            console.log(apiReports);
+
+            const formattedReports: Report[] = apiReports.map(apiReport => ({
+                id: parseInt(apiReport.id),
+                type: apiReport.type,
+                targetId: Number(apiReport.target_id),
+                reason: apiReport.reason,
+                status: apiReport.status,
+                submittedBy: apiReport.submitted_by,
+                resolvedBy: apiReport.resolved_by || undefined,
+                createdAt: new Date(apiReport.createdAt)
+              }));
+
+
+
+
+            setReports(formattedReports);
+
+        } catch(error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchReports();
+      }, []);
+
+
 
     function capitalise(word:string): string {
+        if (!word) return ''; 
         return word[0].toUpperCase() + word.slice(1);
     }
 
@@ -59,15 +85,21 @@ const mockReports: Report[] = [
 
     
 
-    function resolveReport(id:number){
-        setReports(reports.map(report => {
-            if(report.id === id) {
-                return { ...report, status: "resolved", resolvedBy: "admin_1" };
-            }
+    async function resolveReport(id:number){
+        const response = await fetch(`/api/reports/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+        })
 
-            return report;
-        }));
+        const result = await response.json();
+        console.log(result.report);
+
+        fetchReports();
+        toast.success("Report resolved")
     }
+
+    
 
     function filterReports(reports: Report[]): Report[] {
 
@@ -85,6 +117,14 @@ const mockReports: Report[] = [
     return (
 
         <div className = "p-4">
+
+            <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
+                            <div className="font-bold text-lg">ServiHub</div>
+                            <div className="flex gap-4">
+                                <Button variant="outline" onClick={() => router.push("/")}>Home Page</Button>
+                                <Button variant="destructive" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</Button>
+                            </div>
+                        </nav>
 
             <Dialog open={showPopup} onOpenChange={setShowPopup}>
                 <DialogContent>
@@ -104,10 +144,11 @@ const mockReports: Report[] = [
 
 
 
-        <h1 className = "text-2xl font-bold mb-4 text-center">Admin Interface</h1> 
-        <h2 className="text-lg font-bold underline mb-4">{setTitle()}</h2>
+        
 
-        <div className="mx-auto max-w-4xl"></div>
+        <div className="mx-auto max-w-4xl mt-10"></div>
+        <h1 className = "text-2xl font-bold mb-4 text-center pt-10">Admin Interface</h1> 
+        <h2 className="text-lg font-bold underline mb-4">{setTitle()}</h2>
 
         <Table>
             <TableHeader>

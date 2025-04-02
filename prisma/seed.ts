@@ -4,6 +4,10 @@ const prisma = new PrismaClient();
 
 async function seeding() {
 
+  await prisma.report.deleteMany();
+  await prisma.user.deleteMany();
+  console.log("All old reports deleted");
+
   /*User table*/
 await prisma.user.createMany({
   data: [
