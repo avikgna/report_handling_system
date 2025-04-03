@@ -10,18 +10,27 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const { id } = await params;
     const reportId = Number(id);
 
+    if(isNaN(reportId)) {
+        return NextResponse.json({ error: "Error parsing Id"}, { status: 400 });
+    }
+
     const session = await getServerSession(options);
+
+    if (!session){
+        return NextResponse.json({error: "User not logged in, patch update unallowed"}, {status: 401});
+    }
     
     const updatedReport = await prisma.report.update({
         where: { id: Number(reportId) },
         data: {
             resolved_at: new Date(),
-            resolved_by: Number(session?.user.id),
+            resolved_by: Number(session.user.id),
         },
     });
 
     return NextResponse.json({
         message: "Report resolved successfully",
+        /*Overwrite to serialised string values*/
         report: {
             ...updatedReport,
                 id: updatedReport.id.toString(),

@@ -12,11 +12,6 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-
-
-
-
-
 const formSchema = z.object({
     type: z.enum(["review", "user", "business", "service", "other"], {
         message: "Please Enter a Valid Report Type"
@@ -33,13 +28,7 @@ const formSchema = z.object({
 });
 
 export default function ReportForm(){
-
-
-    
-
     const router = useRouter();
-
-    
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -74,7 +63,6 @@ export default function ReportForm(){
 
     async function onSubmit(data: any) {
         try {
-            // Convert targetId to a string to avoid serialization issues with BigInt
             const payload = {
                 ...data,
                 targetId: data.targetId.toString(),
@@ -91,29 +79,18 @@ export default function ReportForm(){
             if (!response.ok) {
                 throw new Error(result.error || "Failed to submit report.");
             }
-    
-            alert("Report submitted successfully!");
 
             toast.success("Report submitted");
-    
-            // Optionally reset the form after submission
             form.reset();
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Submission error:", error);
-    
-            // Ensure `error` is an instance of `Error` before accessing `.message`
-            if (error instanceof Error) {
-                alert(error.message);
-            } else {
-                alert("An unexpected error occurred.");
-            }
+
+            
         }
     }
 
     
     return (
-
-        
 
         <div className="flex justify-center p-5 pt-20">
             <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
@@ -216,12 +193,6 @@ export default function ReportForm(){
 
                             )}
                             />
-
-
-
-
-
-
                     <SubmitButton isSubmitting={form.formState.isSubmitting} />
                     </form>
                 </Form>

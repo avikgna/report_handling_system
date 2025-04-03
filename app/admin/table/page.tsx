@@ -7,9 +7,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { BiUndo } from "react-icons/bi";
-
-
 
   export default function AdminPage() {
 
@@ -19,17 +16,19 @@ import { BiUndo } from "react-icons/bi";
     const [selectedStatus, setSelectedStatus] = useState<string | "">( "");
     const [selectedType, setSelectedType] = useState<string| "">( "");
     const [showPopup, setShowPopup] = useState<boolean>(true);
-    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        fetchReports();
+      }, []);
 
     async function fetchReports() {
         try {
-            setLoading(true);
             const response = await fetch('/api/reports');
             const apiReports: ApiReport[] = await response.json();
+            const formattedReports: Report[] = [];
 
-            console.log(apiReports);
-
-            const formattedReports: Report[] = apiReports.map(apiReport => ({
+            for (const apiReport of apiReports) {
+                formattedReports.push({
                 id: parseInt(apiReport.id),
                 type: apiReport.type,
                 targetId: Number(apiReport.target_id),
@@ -38,23 +37,17 @@ import { BiUndo } from "react-icons/bi";
                 submittedBy: apiReport.submitted_by,
                 resolvedBy: apiReport.resolved_by || undefined,
                 createdAt: new Date(apiReport.createdAt)
-              }));
 
-
-
-
+                });
+            }
             setReports(formattedReports);
 
         } catch(error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+            console.error("Error fetching reports:", error);
+            toast.error("Error fetching reports from Database");
+        } 
     }
 
-    useEffect(() => {
-        fetchReports();
-      }, []);
 
 
 
@@ -83,20 +76,22 @@ import { BiUndo } from "react-icons/bi";
     }
 
 
-    
-
     async function resolveReport(id:number){
         const response = await fetch(`/api/reports/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id }),
-        })
+        });
+
+        if(!response.ok) {
+            throw new Error("Unable to resolve report");
+        }
 
         const result = await response.json();
         console.log(result.report);
 
-        fetchReports();
-        toast.success("Report resolved")
+        await fetchReports();
+        toast.success("Report resolved sucessfully");
     }
 
     
@@ -106,18 +101,14 @@ import { BiUndo } from "react-icons/bi";
     return reports.filter(report =>         
                 (selectedStatus === "" || report.status == selectedStatus) && 
             (selectedType === "" || report.type === selectedType)
-
     ); 
     }
 
     const filteredReports = filterReports(reports);
 
-    
 
     return (
-
         <div className = "p-4">
-
             <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
                             <div className="font-bold text-lg">ServiHub</div>
                             <div className="flex gap-4">
@@ -141,10 +132,6 @@ import { BiUndo } from "react-icons/bi";
                     
                 </DialogContent>
             </Dialog>
-
-
-
-        
 
         <div className="mx-auto max-w-4xl mt-10"></div>
         <h1 className = "text-2xl font-bold mb-4 text-center pt-10">Admin Interface</h1> 

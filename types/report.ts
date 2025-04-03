@@ -24,8 +24,8 @@ export interface ApiReport {
     target_id: string;
     reason: string;
     status: ReportStatus;
-    submitted_by: string;
-    resolved_by?: string;
+    submitted_by: string;  
+    resolved_by: string | null;
     createdAt: string;
 
 }

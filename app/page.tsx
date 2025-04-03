@@ -3,7 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 
 export default function HomePage() {
@@ -11,8 +11,6 @@ export default function HomePage() {
     const { data: session } = useSession();
     const router = useRouter();
     
-    
-
     return (
       
         <div className="min-h-screen bg-gray-100">
@@ -30,12 +28,9 @@ export default function HomePage() {
                     </>
                 ) : (
                     <Button onClick={() => signIn()}>Sign In</Button>
-                )}
-
-                
+                )}              
             </nav>
 
-            {/* Main Content */}
             <div className="flex items-center justify-center h-[90vh]">
                 <Card className="w-[500px] text-center">
                     <CardHeader>

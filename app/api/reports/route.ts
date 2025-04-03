@@ -8,10 +8,10 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        const session = await getServerSession(options);
 
-        const reports = await prisma.report.findMany()
+        const reports = await prisma.report.findMany();
 
+        /*Serialise to strings for api*/
         const processedReports = reports.map(report => ({
             ...report,
             id: report.id.toString(),
@@ -26,8 +26,8 @@ export async function GET() {
         console.error("Error with report fetch for table:", error);
         return NextResponse.json(
             {message: "Internal Server Error" },
-            { status:500 }
-        )
+            { status: 500 }
+        );
     }
 
 
@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
         const { type, targetId, reason, description } = body;
 
         const session = await getServerSession(options);
-        if (!session?.user?.id) {
+
+        if (!session) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
@@ -53,14 +54,14 @@ export async function POST(req: NextRequest) {
             },
         });
 
+        /*Api response in string format for proper serialisation*/
         return NextResponse.json({
             message: "Report submitted successfully",
             report: {
                 ...report,
-                id: report.id.toString(),          // Convert BigInt ID to string
-                target_id: report.target_id.toString(),  // Already doing this
-                submitted_by: report.submitted_by?.toString()  // Convert submitter ID
-                // Add any other BigInt fields your report might have
+                id: report.id.toString(),          
+                target_id: report.target_id.toString(),  
+                submitted_by: report.submitted_by?.toString()  
             }
         }, { status: 200 });
 
