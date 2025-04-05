@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -16,6 +17,8 @@ import { toast } from "react-hot-toast";
     const [selectedStatus, setSelectedStatus] = useState<string | "">( "");
     const [selectedType, setSelectedType] = useState<string| "">( "");
     const [showPopup, setShowPopup] = useState<boolean>(true);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
 
     useEffect(() => {
         fetchReports();
@@ -36,9 +39,11 @@ import { toast } from "react-hot-toast";
                 status: apiReport.status,
                 submittedBy: apiReport.submitted_by,
                 resolvedBy: apiReport.resolved_by || undefined,
-                createdAt: new Date(apiReport.createdAt)
+                createdAt: new Date(apiReport.created_at),
+                
 
                 });
+
             }
             setReports(formattedReports);
 
@@ -57,7 +62,7 @@ import { toast } from "react-hot-toast";
     }
 
 
-    function setTitle(): string {
+    function setFilteredTitle(): string {
         if (selectedStatus === "" && selectedType === ""){
             return "All Reports"
         }
@@ -96,21 +101,35 @@ import { toast } from "react-hot-toast";
 
     
 
-    function filterReports(reports: Report[]): Report[] {
+    const filteredReports = reports
 
-    return reports.filter(report =>         
+    .filter(report =>         
                 (selectedStatus === "" || report.status == selectedStatus) && 
             (selectedType === "" || report.type === selectedType)
-    ); 
-    }
+    )
 
-    const filteredReports = filterReports(reports);
+    .sort((a, b) => {
+        const time1 = a.createdAt.getTime(); //conversion into millisecond
+        const time2 = b.createdAt.getTime(); //conversion into millisecond
+
+        if(sortOrder ==='desc') {
+            return time2 - time1; //sort descending
+
+        } else {
+            return time1 - time2; //sort ascending
+        }
+
+       
+
+    });
+
+    
 
 
     return (
         <div className = "p-4">
             <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
-                            <div className="font-bold text-lg">ServiHub</div>
+                            <div className="font-bold text-2xl">ServiHub</div>
                             <div className="flex gap-4">
                                 <Button variant="outline" onClick={() => router.push("/")}>Home Page</Button>
                                 <Button variant="destructive" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</Button>
@@ -133,9 +152,25 @@ import { toast } from "react-hot-toast";
                 </DialogContent>
             </Dialog>
 
-        <div className="mx-auto max-w-4xl mt-10"></div>
-        <h1 className = "text-2xl font-bold mb-4 text-center pt-10">Admin Interface</h1> 
-        <h2 className="text-lg font-bold underline mb-4">{setTitle()}</h2>
+        <div className="mx-auto max-w-3xl mt-10"></div>
+        <h1 className = "text-3xl font-bold mb-3 text-center pt-8">Admin Interface</h1> 
+        <h2 className="text-2xl font-bold underline mb-5">{setFilteredTitle()}</h2>
+
+        <div className="mb-7 flex items-center gap-4">
+            <label><b>Sort by Date Submitted:</b></label>
+            <Select value={sortOrder}
+                    onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}
+            >
+                <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort Order" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="desc">Newest First</SelectItem>
+                    <SelectItem value="asc">Oldest First</SelectItem>
+                </SelectContent>
+
+            </Select>
+        </div>
 
         <Table>
             <TableHeader>

@@ -92,9 +92,9 @@ export default function ReportForm(){
     
     return (
 
-        <div className="flex justify-center p-5 pt-20">
-            <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
-                <div className="font-bold text-lg">ServiHub</div>
+        <div className="flex justify-center p-4 pt-10">
+            <nav className="w-full p-4 shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
+                <div className="font-bold text-2xl">ServiHub</div>
                 <div className="flex gap-4">
                
                     <Button variant="outline" onClick={() => router.push("/")}>Home Page</Button>
@@ -104,7 +104,7 @@ export default function ReportForm(){
 
             <Card className="w-full max-w-md mt-20">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Submit a Report</CardTitle>
+                    <CardTitle className="text-2xl text-center pb-2">Submit a Report</CardTitle>
                 </CardHeader>
                 <CardContent>
                 <Form {...form}>
@@ -116,7 +116,7 @@ export default function ReportForm(){
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Report Type</FormLabel>
+                            <FormLabel className="pb-2">Report Type</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
@@ -142,7 +142,7 @@ export default function ReportForm(){
                             name="targetId"
                             render = {({field}) => (
                                 <FormItem>
-                                    <FormLabel>Target ID</FormLabel>
+                                    <FormLabel className="pb-2">Target ID</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Enter the ID of what you're reporting (e.g. 624)"
@@ -159,7 +159,7 @@ export default function ReportForm(){
                             name="reason"
                             render = {({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Reason</FormLabel>
+                                    <FormLabel className="pb-2">Reason</FormLabel>
                                     <FormControl>
                                         <Textarea
                                         placeholder="Please provide a brief reason for your report..."
@@ -179,7 +179,7 @@ export default function ReportForm(){
                             name="description"
                             render = {({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Additional Description</FormLabel>
+                                    <FormLabel className="pb-2">Additional Description</FormLabel>
                                     <FormControl>
                                         <Textarea
                                         placeholder="Please provide an (optional) description..."

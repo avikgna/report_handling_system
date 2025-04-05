@@ -16,6 +16,7 @@ export async function GET() {
             ...report,
             id: report.id.toString(),
             target_id: report.target_id.toString(),
+            created_at: report.created_at.toString(),
             submitted_by: report.submitted_by?.toString(),
             resolved_by: report.resolved_by?.toString() || null,
             status: report.resolved_by ? "resolved" : "pending",

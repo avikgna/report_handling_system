@@ -13,8 +13,7 @@ export default function HomePage() {
     
     return (
       
-        <div className="min-h-screen bg-gray-100">
-            {/* Navigation Bar */}
+        <div className="min-h-screen bg-zinc-100">
             <nav className="w-full p-4 bg-white shadow-md flex justify-end gap-4">
 
                 {session  ? (

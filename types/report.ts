@@ -26,6 +26,6 @@ export interface ApiReport {
     status: ReportStatus;
     submitted_by: string;  
     resolved_by: string | null;
-    createdAt: string;
+    created_at: string;
 
 }
