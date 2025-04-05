@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
 
-    const { id } = await params;
+    const { id } = params;
     const reportId = Number(id);
 
     if(isNaN(reportId)) {
