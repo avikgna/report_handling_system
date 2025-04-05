@@ -4,6 +4,8 @@ A reporting system with admin interface for managing user-submitted reports and 
 
 ## Features
 
+- Toast Notifications
+- Dynamic titles
 - User report submission
 - Admin report management and report resolution
 - Role-based access control via NextAuth authentication
@@ -37,7 +39,7 @@ npm install
 
 ### 3. Set up environment variables
 
-Create a .env file in your root directory to store secrets. In order to use the system locally you will need to generate and store a next Auth Secret.
+Create a .env file in your root directory to store secrets for database URL and NextAuthJS token. In order to use the system locally you will need to generate and store a next Auth Secret.
 
 Generate the next auth secret using:
 
@@ -63,10 +65,7 @@ CREATE DATABASE report_handling_system
 ```
 
 Create a database using the schema outlined using the npx prisma migrate dev line.
-
 Seed the database with the seed file located in the repo, the seed file is under the prisma folder.
-
-
 
 ```bash
 CREATE DATABASE report_handling_system
