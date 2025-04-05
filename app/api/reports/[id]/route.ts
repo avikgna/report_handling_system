@@ -5,9 +5,12 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 
 const prisma = new PrismaClient();
 
-export async function PATCH(request: NextRequest, context: { params: { id: string } }) {
+export async function PATCH(
+    req: NextRequest,
+    { params }: { params: { id: string } }
+  ) {
 
-    const { id } = context.params;
+    const { id } = params;
     const reportId = Number(id);
 
     if(isNaN(reportId)) {
