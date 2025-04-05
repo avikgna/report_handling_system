@@ -37,7 +37,16 @@ npm install
 
 ### 3. Set up environment variables
 
-Create a .env file in your root directory to store secrets.
+Create a .env file in your root directory to store secrets. In order to use the system locally you will need to generate and store a next Auth Secret.
+
+Generate the next auth secret using:
+
+```bash
+# Generate a secure random string for NEXTAUTH_SECRET
+openssl rand -base64 32
+```
+
+Then store secrets in your root directory in a .env file:
 
 ```bash
 DATABASE_URL="postgresql://user:password@localhost:5432/report_handling_system"
