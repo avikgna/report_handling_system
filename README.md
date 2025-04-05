@@ -47,14 +47,18 @@ NEXTAUTH_URL="http://localhost:3000"
 
 ### 4. Seed and setup your database using prisma
 
-Ensure PostgreSQL is running
+Ensure PostgreSQL is running and create the database (optionally through command line as detailed below)
 
-Create a database using the schema outlined.
+Create a database using the schema outlined using the npx prisma migrate dev line.
 
-Run database migrations using Prisma and the seed file
+Seed the database with the seed file located in the repo, the seed file is under the prisma folder.
+
+
 
 ```bash
+CREATE DATABASE report_handling_system;
 npx prisma migrate dev
+npx prisma db seed
 ```
 
 
