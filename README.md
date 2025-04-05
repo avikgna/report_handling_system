@@ -26,3 +26,40 @@ A reporting system with admin interface for managing user-submitted reports and 
 ```bash
 git clone https://github.com/yourusername/report_handling_system.git
 cd report_handling_system
+
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Create a .env file in your root directory to store secrets.
+
+```bash
+DATABASE_URL="postgresql://user:password@localhost:5432/report_handling_system"
+NEXTAUTH_SECRET="your-secure-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 4. Seed and setup your database using prisma
+
+Ensure PostgreSQL is running
+
+Create a database using the schema outlined.
+
+Run database migrations using Prisma and the seed file
+
+```bash
+npx prisma migrate dev
+```
+
+
+### 5. Run file
+
+```bash
+npm run dev
+```
