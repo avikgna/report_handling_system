@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 
   export default function AdminPage() {
 
+    //router initialisation for home page button router
     const router = useRouter();
     
     const [reports, setReports] = useState<Report[]>([]);
@@ -24,12 +25,15 @@ import { toast } from "react-hot-toast";
         fetchReports();
       }, []);
 
+    
+    //deserialsing api response
     async function fetchReports() {
         try {
             const response = await fetch('/api/reports');
             const apiReports: ApiReport[] = await response.json();
             const formattedReports: Report[] = [];
 
+            //conversion to database report type from strings
             for (const apiReport of apiReports) {
                 formattedReports.push({
                 id: parseInt(apiReport.id),
@@ -55,13 +59,14 @@ import { toast } from "react-hot-toast";
 
 
 
-
+    //helper function for title capitalisation
     function capitalise(word:string): string {
         if (!word) return ''; 
         return word[0].toUpperCase() + word.slice(1);
     }
 
 
+    //dynamic title setting
     function setFilteredTitle(): string {
         if (selectedStatus === "" && selectedType === ""){
             return "All Reports"
@@ -81,6 +86,7 @@ import { toast } from "react-hot-toast";
     }
 
 
+    //update resolve status
     async function resolveReport(id:number){
         const response = await fetch(`/api/reports/${id}`, {
             method: 'PATCH',
@@ -93,7 +99,6 @@ import { toast } from "react-hot-toast";
         }
 
         const result = await response.json();
-        console.log(result.report);
 
         await fetchReports();
         toast.success("Report resolved sucessfully");
@@ -128,6 +133,7 @@ import { toast } from "react-hot-toast";
 
     return (
         <div className = "p-4">
+            {/*Navigation Bar*/}
             <nav className="w-full p-4 bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
                             <div className="font-bold text-2xl">ServiHub</div>
                             <div className="flex gap-4">
@@ -135,6 +141,8 @@ import { toast } from "react-hot-toast";
                                 <Button variant="destructive" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</Button>
                             </div>
                         </nav>
+            
+            {/*On load pop up*/}
 
             <Dialog open={showPopup} onOpenChange={setShowPopup}>
                 <DialogContent>

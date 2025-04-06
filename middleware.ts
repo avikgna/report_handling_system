@@ -41,5 +41,5 @@ export default withAuth(
 );
 
 export const config = {
-    matcher: ["/user/report", "/admin/table"], // Match specific paths
+    matcher: ["/user/report", "/admin/table"], 
   };

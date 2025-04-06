@@ -5,6 +5,7 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 
 const prisma = new PrismaClient();
 
+/* Patch request awaits the response*/
 export async function PATCH(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }

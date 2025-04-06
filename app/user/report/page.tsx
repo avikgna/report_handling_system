@@ -12,6 +12,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
+/*Input error handling using zod for client side checks*/
 const formSchema = z.object({
     type: z.enum(["review", "user", "business", "service", "other"], {
         message: "Please Enter a Valid Report Type"
@@ -93,6 +94,7 @@ export default function ReportForm(){
     return (
 
         <div className="flex justify-center p-4 pt-10">
+            {/*Navigation bar*/}
             <nav className="w-full p-4 shadow-md flex justify-between items-center fixed top-0 left-0 z-10">
                 <div className="font-bold text-2xl">ServiHub</div>
                 <div className="flex gap-4">
@@ -101,6 +103,8 @@ export default function ReportForm(){
                     <Button variant="destructive" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</Button>
                 </div>
             </nav>
+
+            {/*Report submission form*/}
 
             <Card className="w-full max-w-md mt-20">
                 <CardHeader>

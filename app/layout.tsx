@@ -33,6 +33,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+
+        
         <SessionWrapper>
         <Toaster position="bottom-right" />
         {children}</SessionWrapper>
